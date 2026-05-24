@@ -9,7 +9,6 @@ import os
 import tempfile
 
 from odoo import fields, models, tools
-from odoo.modules.module import get_module_path
 
 from ..gen_src.gen_data_banks import gen_bank_data_csv
 
@@ -73,8 +72,7 @@ class L10nEsPartnerImportWizard(models.TransientModel):
             self.env["res.bank"].load(fieldnames, data)
 
     def import_local(self):
-        module_path = get_module_path("l10n_es_partner")
-        path = os.path.join(module_path, "wizard", "data_banks.csv")
+        path = os.path.join("l10n_es_partner", "wizard", "data_banks.csv")
         if path and os.path.exists(path):
             self._load_csv_data(path)
         else:
