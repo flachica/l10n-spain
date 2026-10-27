@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright 2026 Acysos S.L.
      License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl). -->
 <odoo>
@@ -28,7 +28,7 @@
                             <field name="special_authorization" widget="text" />
                             <field
                                 name="carrier_contact_id"
-                                readonly="state in ('done', 'cancel')"
+                                readonly="state in ('cancel')"
                             />
                         </group>
                     </group>
