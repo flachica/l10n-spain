@@ -186,6 +186,7 @@ class L10nEsAeatMod347Report(models.Model):
             "name": self.env._("Partner records"),
             "view_mode": "list,form",
             "res_model": "l10n.es.aeat.mod347.partner_record",
+            "context": dict(self.env.context, default_report_id=self.id),
             "type": "ir.actions.act_window",
         }
 
@@ -404,9 +405,7 @@ class L10nEsAeatMod347PartnerRecord(models.Model):
             ("G", "G - Compras agencia viaje"),
         ],
     )
-    partner_id = fields.Many2one(
-        comodel_name="res.partner", string="Partner", required=True
-    )
+    partner_id = fields.Many2one(comodel_name="res.partner", required=True)
     partner_vat = fields.Char(string="VAT number", size=9)
     representative_vat = fields.Char(
         string="L.R. VAT number", size=9, help="Legal Representative VAT number"
@@ -710,7 +709,6 @@ class L10nEsAeatMod347RealStateRecord(models.Model):
     )
     partner_id = fields.Many2one(
         comodel_name="res.partner",
-        string="Partner",
         required=True,
     )
     partner_vat = fields.Char(

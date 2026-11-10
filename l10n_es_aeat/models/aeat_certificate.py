@@ -66,7 +66,6 @@ class L10nEsAeatCertificate(models.Model):
     private_key = fields.Char(readonly=True)
     company_id = fields.Many2one(
         comodel_name="res.company",
-        string="Company",
         required=True,
         default=lambda self: self.env.company,
     )
@@ -129,7 +128,7 @@ class L10nEsAeatCertificate(models.Model):
 
     def get_certificates(self, company=False):
         if not company:
-            company = self.env.user.company_id
+            company = self.env.company
         today = fields.Date.today()
         aeat_certificate = self.search(
             Domain.AND(

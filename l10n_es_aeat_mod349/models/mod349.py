@@ -287,6 +287,10 @@ class Mod349(models.Model):
                 else:
                     period_type = month
             key = (partner, op_key, period_type, year)
+            if key in data and not original_details:
+                # Without a previous declaration, each origin invoice adds its
+                # own amount to the period
+                data[key]["original_amount"] += origin_amount
             key_vals = data.setdefault(
                 key,
                 {"original_amount": origin_amount, "refund_details": refund_detail_obj},
@@ -485,11 +489,10 @@ class Mod349PartnerRecord(models.Model):
     )
     partner_id = fields.Many2one(
         comodel_name="res.partner",
-        string="Partner",
         required=True,
     )
     partner_vat = fields.Char(string="VAT", size=15, index=True)
-    country_id = fields.Many2one(comodel_name="res.country", string="Country")
+    country_id = fields.Many2one(comodel_name="res.country")
     operation_key = fields.Selection(
         selection=_selection_operation_key,
     )
@@ -590,7 +593,6 @@ class Mod349PartnerRefund(models.Model):
     )
     partner_id = fields.Many2one(
         comodel_name="res.partner",
-        string="Partner",
         required=True,
         index=True,
     )
@@ -598,7 +600,7 @@ class Mod349PartnerRefund(models.Model):
     operation_key = fields.Selection(
         selection=_selection_operation_key,
     )
-    country_id = fields.Many2one(comodel_name="res.country", string="Country")
+    country_id = fields.Many2one(comodel_name="res.country")
     total_operation_amount = fields.Float(
         compute="_compute_total_operation_amount",
         string="Total rectified amount",
@@ -635,7 +637,7 @@ class Mod349PartnerRefund(models.Model):
                 and record.total_origin_amount >= 0.0
             )
 
-    @api.depends("refund_detail_ids")
+    @api.depends("refund_detail_ids.amount_untaxed", "total_origin_amount")
     def _compute_total_operation_amount(self):
         for record in self:
             rectified_amount = sum(record.mapped("refund_detail_ids.amount_untaxed"))
